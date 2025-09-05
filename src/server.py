@@ -4,7 +4,7 @@ import threading
 from enum import Enum
 from datetime import datetime
 
-class ServerState(Enum):
+class ServerStatus(Enum):
     HEALTHY = "Healthy"
     OVERLOADED = "Overloaded"
     DOWN = "Down"
@@ -26,7 +26,7 @@ class Server:
         # Current state
         self.current_requests = 0
         self.total_requests_handled = 0
-        self.status = ServerState.HEALTHY
+        self.status = ServerStatus.HEALTHY
         self.last_request_time = None
 
         # Thread safety
@@ -36,7 +36,7 @@ class Server:
 
     def can_handle_request(self):
         # Can the server take more requests -- checker
-        return self.current_requests < self.max_capacity and self.status == ServerState.HEALTHY
+        return self.current_requests < self.max_capacity and self.status == ServerStatus.HEALTHY
 
     def process_request(self, request_id):
         """
@@ -87,9 +87,9 @@ class Server:
 
             # update status based on load
             if util > 90:
-                self.status = ServerState.OVERLOADED
+                self.status = ServerStatus.OVERLOADED
             elif util < 70:
-                self.status = ServerState.HEALTHY
+                self.status = ServerStatus.HEALTHY
             
             return {
                 "server_id": self.server_id,

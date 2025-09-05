@@ -2,7 +2,7 @@ import threading
 import time
 from datetime import datetime
 from enum import Enum
-from .server import Server, ServerState
+from server import Server, ServerStatus
 
 class RoutingAlgo(Enum):
     ROTATING = "rotating"
@@ -57,7 +57,7 @@ class LoadBalancer:
         """
 
         with self.lock:
-            self.total_requests_routed += 1
+            self.total_requests += 1
 
             if not self.servers:
                 print(f"No servers available for request {request_id}")
@@ -65,7 +65,7 @@ class LoadBalancer:
                 return False
             
             # Choose server based on algo (from enum)
-            selected_server = self.select_server()
+            selected_server = self._select_server()
 
             if not selected_server:
                 print(f"No available servers for request {request_id}")
@@ -87,9 +87,9 @@ class LoadBalancer:
         """
         
         if self.rounting_algo == RoutingAlgo.ROTATING:
-            return self._select_server_round_robin()
+            return self._rotating_selection()
         elif self.rounting_algo == RoutingAlgo.LEAST_CONNECTIONS:
-            return self._select_server_least_connections()
+            return self._least_connections_selection()
         else:
             return self._rotating_selection()
     
@@ -137,7 +137,7 @@ class LoadBalancer:
         with self.lock:
             healthy_servers = 0
             for s in self.servers:
-                if s.status == ServerState.HEALTHY:
+                if s.status == ServerStatus.HEALTHY:
                     healthy_servers += 1
             
             total_capacity = 0
@@ -151,9 +151,9 @@ class LoadBalancer:
             return {
                 "total_servers": len(self.servers),
                 "healthy_servers": healthy_servers,
-                "total_requests_routed": self.total_requests_routed,
+                "total_requests_routed": self.total_requests,
                 "failed_requests": self.failed_requests,
-                "success_rate": ((self.total_requests_routed - self.failed_requests) / max(1, self.total_requests_routed)) * 100,
+                "success_rate": ((self.total_requests - self.failed_requests) / max(1, self.total_requests)) * 100,
                 "total_capacity": total_capacity,
                 "current_load": current_load,
                 "util": (current_load / max(1, total_capacity)) * 100
@@ -167,11 +167,11 @@ class LoadBalancer:
 
         print("\n--- Load Balancer Stats ---")
         print(f"\n Load Balancer Status:")
-        print(f" Algorithm: {self.routing_algorithm.value}")
+        print(f" Algorithm: {self.rounting_algo.value}")
         print(f" Servers: {stats['healthy_servers']}/{stats['total_servers']} healthy")
         print(f" Requests: {stats['total_requests_routed']} total, {stats['failed_requests']} failed")
         print(f" Success Rate: {stats['success_rate']:.1f}%")
-        print(f" System Load: {stats['current_load']}/{stats['total_capacity']} ({stats['utilization']:.1f}%)")
+        print(f" System Load: {stats['current_load']}/{stats['total_capacity']} ({stats['util']:.1f}%)")
         
         print(f"\n Server Details:")
         for server in self.servers:
