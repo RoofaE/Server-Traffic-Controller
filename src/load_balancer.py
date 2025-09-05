@@ -115,10 +115,50 @@ class LoadBalancer:
         # no servers available
         return None
     
+    def _least_connections_selection(self):
+        """
+        Choose the server with fewest actinve connections
+        """
+
+        available_servers = [s for s in self.servers if s.can_handle_request()]
+
+        if not available_servers:
+            return None
+        
+        # Find the server with least current requests
+        best_server = min(available_servers, key=lambda s: s.current_requests)
+        return best_server
     
+    def get_stats(self):
+        """
+        Get current load balancer stats
+        """
+
+        with self.lock:
+            healthy_servers = 0
+            for s in self.servers:
+                if s.status == ServerState.HEALTHY:
+                    healthy_servers += 1
+            
+            total_capacity = 0
+            for s in self.servers:
+                total_capacity += s.max_capacity
+
+            current_load = 0
+            for s in self.servers:
+                current_load += s.current_requests
         
+            return {
+                "total_servers": len(self.servers),
+                "healthy_servers": healthy_servers,
+                "total_requests_routed": self.total_requests_routed,
+                "failed_requests": self.failed_requests,
+                "success_rate": ((self.total_requests_routed - self.failed_requests) / max(1, self.total_requests_routed)) * 100,
+                "total_capacity": total_capacity,
+                "current_load": current_load,
+                "util": (current_load / max(1, total_capacity)) * 100
+            }
         
-        
-        
+    
         
 
