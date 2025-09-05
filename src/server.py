@@ -102,7 +102,7 @@ class Server:
         
     def __str__(self):
         stats = self.get_stats()
-        return f"Server {self.server_id}: {stats["current_requests"]}/{self.max_capacity} ({stats['utilization']:.1f}% - {stats['status']})"
+        return f"Server {self.server_id}: {stats["current_requests"]}/{self.max_capacity} ({stats['util']:.1f}% - {stats['status']})"
     
 
 if __name__ == "__main__":
@@ -116,4 +116,3 @@ if __name__ == "__main__":
     result = server.process_request("Req-1")
     print(f"Request processed: {result}")
     print(f"Server stats: {server}")
-    
