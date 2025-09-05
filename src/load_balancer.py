@@ -49,11 +49,76 @@ class LoadBalancer:
                     return removed_server
             return None
     
-    def route_request(self, server_id):
+    def route_request(self, request_id):
         """
         Decide which server should handle this reuqest
 
         This is called everytime a new web request comes in
         """
 
+        with self.lock:
+            self.total_requests_routed += 1
+
+            if not self.servers:
+                print(f"No servers available for request {request_id}")
+                self.failed_requests += 1
+                return False
+            
+            # Choose server based on algo (from enum)
+            selected_server = self.select_server()
+
+            if not selected_server:
+                print(f"No available servers for request {request_id}")
+                self.failed_requests += 1
+                return False
+            
+        # Route the request outside the lock so other requests can start while this is processed
+        print(f"Routing request {request_id} to {selected_server.server_id}")
+
+        # Process the request in a different thread so it doesnt block the load balancer
+        request_thread = threading.Thread(target=selected_server.process_request, args=(request_id,))
+        request_thread.start()
+
+        return True
+    
+    def _select_server(self):
+        """
+        Choose which server should handle the next request
+        """
         
+        if self.rounting_algo == RoutingAlgo.ROTATING:
+            return self._select_server_round_robin()
+        elif self.rounting_algo == RoutingAlgo.LEAST_CONNECTIONS:
+            return self._select_server_least_connections()
+        else:
+            return self._rotating_selection()
+    
+    def _rotating_selection(self):
+        """
+        Cycle through servers in order
+        """
+
+        attempts = 0
+        startIndex = self.current_server_index
+
+        while attempts < len(self.servers):
+            server = self.servers[self.current_server_index]
+
+            # move to next server for next request
+            self.current_server_index = (self.current_server_index +1) % len(self.servers) # use startIndex
+            attempts += 1
+
+            # check if this server can handle the request
+            if server.can_handle_request():
+                return server
+        
+        # no servers available
+        return None
+    
+    
+        
+        
+        
+        
+        
+
