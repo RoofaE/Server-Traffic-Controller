@@ -100,9 +100,20 @@ class Server:
                 "last_request": self.last_request_time
             }
         
-        def __str__(self):
-            stats = self.get_stats()
-            return f"Server {self.server_id}: {stats["current_requests"]}/{self.max_capacity} ({stats['utilization']:.1f}% - {stats['status']})"
+    def __str__(self):
+        stats = self.get_stats()
+        return f"Server {self.server_id}: {stats["current_requests"]}/{self.max_capacity} ({stats['utilization']:.1f}% - {stats['status']})"
     
 
+if __name__ == "__main__":
+    # Server Test
+    server = Server("Test 1", max_capacity=3, base_response_time=0.5)
+
+    print(f"Server stats: {server}")
+    print(f"Can handle request? {server.can_handle_request()}")
+
+    # Processing a Request Test
+    result = server.process_request("Req-1")
+    print(f"Request processed: {result}")
+    print(f"Server stats: {server}")
     
