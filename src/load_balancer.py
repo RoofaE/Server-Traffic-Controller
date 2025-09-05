@@ -159,6 +159,52 @@ class LoadBalancer:
                 "util": (current_load / max(1, total_capacity)) * 100
             }
         
-    
+    def print_stats(self):
+        """
+        Prints current status of load balancer and all servers
+        """
+        stats = self.get_stats()
+
+        print("\n--- Load Balancer Stats ---")
+        print(f"\n Load Balancer Status:")
+        print(f" Algorithm: {self.routing_algorithm.value}")
+        print(f" Servers: {stats['healthy_servers']}/{stats['total_servers']} healthy")
+        print(f" Requests: {stats['total_requests_routed']} total, {stats['failed_requests']} failed")
+        print(f" Success Rate: {stats['success_rate']:.1f}%")
+        print(f" System Load: {stats['current_load']}/{stats['total_capacity']} ({stats['utilization']:.1f}%)")
         
+        print(f"\n Server Details:")
+        for server in self.servers:
+            print(f"   {server}")
+        print("---------------------------\n")
+
+# Test the load balancer
+if __name__ == "__main__":
+    # Create load balancer
+    lb = LoadBalancer(rounting_algo=RoutingAlgo.ROTATING)
+
+    # Add servers to the pool for testing
+    server1 = Server("Server 1", max_capacity=3, base_response_time=0.3)
+    server2 = Server("Server 2", max_capacity=5, base_response_time=0.5)
+    server3 = Server("Server 3", max_capacity=2, base_response_time=0.2)
+
+    lb.add_server(server1)
+    lb.add_server(server2)
+    lb.add_server(server3)
+
+    # Initial status
+    lb.print_stats()
+
+    # Route some requests
+    print(f"\n Routing test requests...")
+    for i in range(6):
+        request_id = f"req-{i+1:03d}" # start from 1, format string as int with 3 digits
+        lb.route_request(request_id)
+        time.sleep(0.1)  # Small delay between requests
+
+    # Wait a little bit for requests to process
+    time.sleep(3)
+
+    # Show final stats
+    lb.print_stats()
 
