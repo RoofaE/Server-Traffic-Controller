@@ -33,3 +33,40 @@ class Server:
         self.lock = threading.Lock()
 
         print(f"Server {self.server_id} initialized with max capacity {self.max_capacity} and base response time {self.base_response_time}s")
+
+    def can_handle_request(self):
+        # Can the server take more requests -- checker
+        return self.current_requests < self.max_capacity and self.status == ServerState.HEALTHY
+
+    def process_request(self, request_id):
+        """
+        Simulate processing web request
+
+        Runs by its own thread for concurrency processing
+        """
+
+        with self.lock:
+            if not self.can_handle_request():
+                return False # server full or down
+            
+            self.current_requests += 1
+            self.total_requests_handled += 1
+            self.last_request_time = datetime.now()
+        
+        processing_time = self.calculate_response_time()
+        print(f"Server {self.server_id} processing request {request_id} (will take {processing_time:.2f}s)")
+
+        # Show that work is being done
+        time.sleep(processing_time)
+
+        # Request done
+        with self.lock:
+            self.current_requests -= 1
+        
+        print(f"Server {self.server_id} complted request {request_id}")
+        return True
+
+    
+    
+
+    
