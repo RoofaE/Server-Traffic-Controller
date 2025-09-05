@@ -66,7 +66,43 @@ class Server:
         print(f"Server {self.server_id} complted request {request_id}")
         return True
 
+    def calculate_response_time(self):
+        """
+        Calculates response time on current load
+        """
+        load_factor = self.current_requests / self.max_capacity
+
+        # When server is busy, response time decreases
+        response_time = self.base_response_time * (1 + load_factor)
+
+        return response_time
     
+    def get_stats(self):
+        """
+        Gets the current server stats
+        """
+
+        with self.lock:
+            util = (self.current_requests / self.max_capacity) * 100
+
+            # update status based on load
+            if util > 90:
+                self.status = ServerState.OVERLOADED
+            elif util < 70:
+                self.status = ServerState.HEALTHY
+            
+            return {
+                "server_id": self.server_id,
+                "current_requests": self.current_requests,
+                "total_handled": self.total_requests_handled,
+                "util": util,
+                "status": self.status.value,
+                "last_request": self.last_request_time
+            }
+        
+        def __str__(self):
+            stats = self.get_stats()
+            return f"Server {self.server_id}: {stats["current_requests"]}/{self.max_capacity} ({stats['utilization']:.1f}% - {stats['status']})"
     
 
     
