@@ -51,4 +51,35 @@ class TrafficGenerator:
             self.generator_thread.join()
         print("Traffic Generation stopped")
     
+    def _generate_traffic(self):
+        """
+        Main traffic generation, this runs on a diff thread
+        """
+        start_time = time.time()
+
+        while self.is_running:
+            # calculates how long were running for (gradual increase pattern)
+            elapsed_time = time.time - start_time
+
+            # decides how many requests needed to send based on pattern
+            requests_to_send = self._calculate_request_count(elapsed_time)
+
+            # send the requests
+            for _ in range(requests_to_send):
+                if not self.is_running:
+                    break
+
+                self.request_counter +=1
+                request_id = f"Traffic-{self.request_counter:04d}" # 4 digit decimal
+
+                # send request to load balancer
+                self.load_balancer.route_request(request_id)
+            
+            # wait before next requests
+            sleep_time = self._calculate_sleep_time(elapsed_time)
+            time.sleep(sleep_time)
+        
+        
+
+    
 
