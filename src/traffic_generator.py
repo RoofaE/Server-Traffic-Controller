@@ -80,6 +80,27 @@ class TrafficGenerator:
             time.sleep(sleep_time)
         
         
-
+    def _calculate_sleep_time(self, elapsed_time):
+        """
+        Decide how many requests to send this time
+        """
     
+        if self.pattern == TrafficPattern.STEADY:
+            # have 1-2 requests for every cycle
+            return random.randint(1,2)
+        elif self.pattern == TrafficPattern.BURST:
+            # quiet with sudden spikes
+            if random.random() < 0.1: # 10% chance burst
+                print("Traffic Spike Happened")
+                return random.randint(5,10) # big burst
+            else:
+                return random.randint(0, 1) # quiet the rest of the time
+
+        elif self.pattern == TrafficPattern.GRADUAL_INCREASE:
+            # start slow, gt busier over time
+            base_requests = 1
+            growth_factor = elapsed_time/30 # this gts busier every 30secs
+            max_requests = int(base_requests + growth_factor)
+            return random.randint(1, max(1, max_requests))
+         
 
