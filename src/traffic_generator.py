@@ -80,7 +80,7 @@ class TrafficGenerator:
             time.sleep(sleep_time)
         
         
-    def _calculate_sleep_time(self, elapsed_time):
+    def _calculate_sleep_count(self, elapsed_time):
         """
         Decide how many requests to send this time
         """
@@ -110,5 +110,42 @@ class TrafficGenerator:
             return 1
 
 
-    def _calculate_sleep(self, elapsed_time):
-        pass
+    def _calculate_sleep_time(self, elapsed_time):
+        """
+        Decide how long to wait before next batch of requests
+        """
+
+        if self.pattern == TrafficPattern.STEADY:
+            return random.uniform(1.0, 2.0) # 102 seconds between batches
+        
+        elif self.pattern == TrafficPattern.BURST:
+            return random.uniform(0.5, 3.0) # more variable and varaible timing
+        
+        elif self.pattern == TrafficPattern.GRADUAL_INCREASE:
+            # when traffic incrases, requests come faster
+            base_sleep = 2.0
+            speed_factor = elapsed_time / 60 # get faster every minute
+            sleep_time = max(0.2, base_sleep - speed_factor) 
+            return sleep_time
+        
+        elif self.pattern == TrafficPattern.RANDOM:
+            return random.uniform(0.1, 4.0) # unpredictable timing
+
+        else:
+            return 1.0 # default 1 second
+        
+    def get_stats(self):
+        """
+        Get traffic generator stats
+        """
+
+        return {
+            "pattern": self.pattern.value,
+            "total_requests_sent": self.request_counter,
+            "is_running": self.is_running
+        }
+    
+# Test the traffic generator
+if __name__ == "__main__":
+    pass
+        
