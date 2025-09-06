@@ -102,5 +102,11 @@ class TrafficGenerator:
             growth_factor = elapsed_time/30 # this gts busier every 30secs
             max_requests = int(base_requests + growth_factor)
             return random.randint(1, max(1, max_requests))
-         
+        
+        elif self.pattern == TrafficPattern.RANDOM:
+            return random.randint(0, 5) # unpredictable
+
+        else:
+            return 1
+
 
