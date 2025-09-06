@@ -110,3 +110,5 @@ class TrafficGenerator:
             return 1
 
 
+    def _calculate_sleep(self, elapsed_time):
+        pass
