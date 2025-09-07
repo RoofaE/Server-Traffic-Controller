@@ -92,4 +92,30 @@ class AutoScaler:
                 break
 
 if __name__ == "__main__":
-    pass
+    from load_balancer import LoadBalancer, RoutingAlgo
+    from traffic_generator import TrafficGenerator, TrafficPattern
+
+    # setup load balancer
+    lb = LoadBalancer(RoutingAlgo.ROTATING)
+    lb.add_server(Server("Number-1", 3, 0.3))
+    lb.add_server(Server("Number-2", 3, 0.4))
+
+    scaler = AutoScaler(lb, min_servers=2, max_servers=6)
+    traffic = TrafficGenerator(lb, TrafficPattern.BURST)
+
+    print("\n Starting Auto Scaler Test")
+
+    try:
+        scaler.start()
+        traffic.start()
+
+        while True:
+            time.sleep(8)
+            stats = lb.get_stats()
+            print(f"\n Servers: {stats["total_servers"]}, Util: {stats['util']:.1f}%, Success: {stats['success_rate']:.1f}%")
+    
+    except KeyboardInterrupt:
+        print("\nStopping")
+        traffic.stop()
+        scaler.stop()
+        
