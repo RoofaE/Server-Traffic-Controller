@@ -66,4 +66,16 @@ class AutoScaler:
                 self._remove_server()
     
     def _add_server(self):
-        pass
+        """
+        Adds a new server
+        """
+        self.server_count +=1
+        server_id = f"Auto-{self.server_count:}"
+        new_server = Server(server_id, max_capacity=3, base_response_time=0.4)
+
+        self.load_balancer.add_server(new_server)
+        self.last_scale_time = time.time()
+
+        print(f">>>>> Scaled UP: Added server {server_id} (Total: {len(self.load_balancer.servers)})<<<<<")
+
+    
