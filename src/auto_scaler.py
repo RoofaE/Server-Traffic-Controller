@@ -97,8 +97,8 @@ if __name__ == "__main__":
 
     # setup load balancer
     lb = LoadBalancer(RoutingAlgo.ROTATING)
-    lb.add_server(Server("Number-1", 3, 0.3))
-    lb.add_server(Server("Number-2", 3, 0.4))
+    lb.add_server(Server("Number-1", 3, 0.8))
+    lb.add_server(Server("Number-2", 3, 0.9))
 
     scaler = AutoScaler(lb, min_servers=2, max_servers=6)
     traffic = TrafficGenerator(lb, TrafficPattern.BURST)
@@ -118,4 +118,3 @@ if __name__ == "__main__":
         print("\nStopping")
         traffic.stop()
         scaler.stop()
-        
