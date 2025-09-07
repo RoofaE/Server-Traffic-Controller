@@ -78,4 +78,18 @@ class AutoScaler:
 
         print(f">>>>> Scaled UP: Added server {server_id} (Total: {len(self.load_balancer.servers)})<<<<<")
 
-    
+    def _remove_server(self):
+        """
+        Removes the least busy server
+        """
+
+        for server in self.load_balancer.servers:
+            if server.current_requests == 0:
+                self.load_balancer.remove_server(server.server_id)
+                self.last_scale_time = time.time()
+
+                print(f">>>>> Scaled DOWN: Removed server {server.server_id} (Total: {len(self.load_balancer.servers)})<<<<<")
+                break
+
+if __name__ == "__main__":
+    pass
