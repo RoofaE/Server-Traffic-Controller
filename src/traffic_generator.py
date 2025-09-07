@@ -59,7 +59,7 @@ class TrafficGenerator:
 
         while self.is_running:
             # calculates how long were running for (gradual increase pattern)
-            elapsed_time = time.time - start_time
+            elapsed_time = time.time() - start_time
 
             # decides how many requests needed to send based on pattern
             requests_to_send = self._calculate_request_count(elapsed_time)
@@ -80,7 +80,7 @@ class TrafficGenerator:
             time.sleep(sleep_time)
         
         
-    def _calculate_sleep_count(self, elapsed_time):
+    def _calculate_request_count(self, elapsed_time):
         """
         Decide how many requests to send this time
         """
@@ -147,5 +147,47 @@ class TrafficGenerator:
     
 # Test the traffic generator
 if __name__ == "__main__":
-    pass
-        
+    # imports
+    from load_balancer import LoadBalancer, RoutingAlgo
+    from server import Server
+
+    # create load balancer
+    lb = LoadBalancer(RoutingAlgo.ROTATING)
+
+    # add servers to the pool for testing
+    server1 = Server("Server 1", max_capacity=3, base_response_time=0.3)
+    server2 = Server("Server 2", max_capacity=4, base_response_time=0.4)
+    server3 = Server("Server 3", max_capacity=2, base_response_time=0.2)
+
+    # add servers to load balancer
+    lb.add_server(server1)
+    lb.add_server(server2)
+    lb.add_server(server3)
+
+    # create a traffic generator
+    traffic_gen = TrafficGenerator(lb, TrafficPattern.BURST)
+
+    print("\n Starting Traffic Simulation")
+    print("Ctrl-C to stop\n")
+
+    try:
+        # start generating traffic
+        traffic_gen.start()
+
+        # run for a while and slow every 5 seconds
+        while True:
+            time.sleep(5)
+            
+            # show the stats
+            lb_stats = lb.get_stats()
+            traffic_stats = traffic_gen.get_stats()
+
+            print(f"\n Updates:")
+            print(f" Traffic: {traffic_stats["total_requests_sent"]} requests sent ({traffic_stats['pattern']} pattern)")
+            print(f" Load Balancer: {lb_stats['total_requests_routed']} processed, {lb_stats['success_rate']:.1f}% success")
+            print(f" System Load: {lb_stats['current_load']}/{lb_stats['total_capacity']} ({lb_stats['util']:.1f}%)")
+    except KeyboardInterrupt:
+        print("\n Stopping Traffic Simulation")
+        traffic_gen.stop()
+        print("Simulation Finished")
+    
