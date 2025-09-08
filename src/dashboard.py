@@ -43,3 +43,11 @@ class Dashboard:
             stats = server.get_stats()
             status_icon = "ONLINE ●" if stats["status"] == "healthy" else "OFFLINE ○"
             print(f" {i}. {server.server_id}: {stats["current_requests"]}/{server.max_capacity} ({stats["util"]:.0f}%) {status_icon}")
+
+        # Traffic Generator Stats
+        if self.traffic_generator:
+            traffic_stats = self.traffic_generator.get_stats()
+            print(f"\n Traffic Generator: ")
+            print(f" Pattern: {traffic_stats["pattern"]}")
+            print(f" Requests Sent: {traffic_stats["total_requests_sent"]}")
+            print(f" Status:" " RUNNING ●" if traffic_stats["is_running"] else "STOPPED ○")
