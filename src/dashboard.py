@@ -51,3 +51,27 @@ class Dashboard:
             print(f" Pattern: {traffic_stats["pattern"]}")
             print(f" Requests Sent: {traffic_stats["total_requests_sent"]}")
             print(f" Status:" " RUNNING ●" if traffic_stats["is_running"] else "STOPPED ○")
+
+        if self.auto_scaler:
+            print(f"\n Auto Scaling:")
+            print(f" Min Servers: {self.auto_scaler.min_servers}")
+            print(f" Maximum Servers: {self.auto_scaler.max_servers}")
+            print(f" Status: {'Active' if self.auto_scaler.is_running else 'Inactive'}")
+
+        print("\n")
+        print("=============================================================================================")
+
+    def start_live_monitoring(self, refresh_interval=3):
+        """
+        Starts live dashboard and refreshes automatically 
+        """
+
+        print("Live Dashboard")
+
+        try:
+            while True:
+                self.display_stats()
+                time.sleep(refresh_interval)
+        except KeyboardInterrupt:
+            print("\nDashboard Ended")
+    
