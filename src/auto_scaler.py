@@ -112,7 +112,7 @@ if __name__ == "__main__":
         while True:
             time.sleep(8)
             stats = lb.get_stats()
-            print(f"\n Servers: {stats["total_servers"]}, Util: {stats['util']:.1f}%, Success: {stats['success_rate']:.1f}%")
+            print(f"\n Servers: {stats['total_servers']}, Util: {stats['util']:.1f}%, Success: {stats['success_rate']:.1f}%")
     
     except KeyboardInterrupt:
         print("\nStopping")

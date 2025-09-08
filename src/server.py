@@ -63,7 +63,7 @@ class Server:
         with self.lock:
             self.current_requests -= 1
         
-        print(f"Server {self.server_id} complted request {request_id}")
+        print(f"Server {self.server_id} completed request {request_id}")
         return True
 
     def calculate_response_time(self):
@@ -102,7 +102,7 @@ class Server:
         
     def __str__(self):
         stats = self.get_stats()
-        return f"Server {self.server_id}: {stats["current_requests"]}/{self.max_capacity} ({stats['util']:.1f}% - {stats['status']})"
+        return f"Server {self.server_id}: {stats['current_requests']}/{self.max_capacity} ({stats['util']:.1f}% - {stats['status']})"
     
 
 if __name__ == "__main__":

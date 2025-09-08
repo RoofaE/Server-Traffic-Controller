@@ -183,7 +183,7 @@ if __name__ == "__main__":
             traffic_stats = traffic_gen.get_stats()
 
             print(f"\n Updates:")
-            print(f" Traffic: {traffic_stats["total_requests_sent"]} requests sent ({traffic_stats['pattern']} pattern)")
+            print(f" Traffic: {traffic_stats['total_requests_sent']} requests sent ({traffic_stats['pattern']} pattern)")
             print(f" Load Balancer: {lb_stats['total_requests_routed']} processed, {lb_stats['success_rate']:.1f}% success")
             print(f" System Load: {lb_stats['current_load']}/{lb_stats['total_capacity']} ({lb_stats['util']:.1f}%)")
     except KeyboardInterrupt:
