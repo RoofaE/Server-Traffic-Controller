@@ -83,8 +83,8 @@ if __name__ == "__main__":
 
     # Setup
     loadbalancer = LoadBalancer(RoutingAlgo.ROTATING)
-    loadbalancer.add_server("Web-1", 3, 0.5)
-    loadbalancer.add_server("Web-2", 4, 0.6)
+    loadbalancer.add_server(Server("Web-1", 3, 0.5))
+    loadbalancer.add_server(Server("Web-2", 4, 0.6))
 
     traffic_gen = TrafficGenerator(loadbalancer, TrafficPattern.BURST)
 
