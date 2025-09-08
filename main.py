@@ -57,6 +57,41 @@ def system_setup():
 
     return lb, traffic_gen, auto_scaler, dashboard
 
+def run_system(lb, traffic_gen, auto_scaler, dashboard):
+    """
+    Runs the system
+    """
+
+    print("\n Starting everything")
+
+    try:
+        # start traffic and auto scaler
+        traffic_gen.start()
+        auto_scaler.start()
+
+        print("System is running & Dashboard starting soon...\n")
+        time.sleep(2)
+
+        # start live dashboard
+        dashboard.start_live_monitoring(refresh_interval=3)
+
+    except KeyboardInterrupt:
+        print("\n\n\nShutting down system")
+
+        # Stop everything
+        traffic_gen.stop()
+        auto_scaler.stop()
+
+        lb_stats = lb.get_stats()
+        traffic_stats = traffic_gen.get_stats()
+
+        print(f"Total Requests: {traffic_stats['total_requests_sent']}")
+        print(f"Success Rate: {lb_stats['success_rate']:.1f}%")
+        print(f"Final Server Count: {lb_stats['total_servers']}")
+        print(f"Peak Util: {lb_stats['util']:.1f}%")
+
+        print("\nSystem has now shutdown")
+
     
 
 
