@@ -1,7 +1,7 @@
 import time
 import threading
 import random
-from server import Server
+from .server import Server
 from datetime import datetime
 
 class AutoScaler:

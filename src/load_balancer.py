@@ -2,7 +2,7 @@ import threading
 import time
 from datetime import datetime
 from enum import Enum
-from server import Server, ServerStatus
+from .server import Server, ServerStatus
 
 class RoutingAlgo(Enum):
     ROTATING = "rotating"

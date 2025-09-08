@@ -92,6 +92,19 @@ def run_system(lb, traffic_gen, auto_scaler, dashboard):
 
         print("\nSystem has now shutdown")
 
-    
+def main():
+    """
+    Main point
+    """
+    welcome()
+
+    # setup system
+    lb, traffic_gen, auto_scaler, dashboard = system_setup()
+
+    # run system
+    run_system(lb, traffic_gen, auto_scaler, dashboard)
+
+if __name__ == "__main__":
+    main()
 
 
