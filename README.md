@@ -12,11 +12,19 @@ A smart load balancer that automatically routes web traffic across multiple serv
 
 ## Quick Start:
 
+On Windows:
 ```bash
 git clone https://github.com/RoofaE/Server-Traffic-Controller.git
 cd server-traffic-controller
 python main.py
 ```
+On macOS:
+```bash
+git clone https://github.com/RoofaE/Server-Traffic-Controller.git
+cd server-traffic-controller
+python main.py
+```
+
 This starts everything:
 - 2 initial servers
 - Traffic generator (creates bursts)
@@ -66,3 +74,4 @@ python src/dashboard.py
 - Threading (for concurrent requests)
 - Real time monitoring
 - Auto scaling algorithms
+
