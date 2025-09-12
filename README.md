@@ -68,11 +68,41 @@ python src/dashboard.py
 - **GRADUAL_INCREASE** - Slowly gets busier
 - **RANDOM** - Unpredictable chaos
 
+## Sample Output:
+```
+Traffic Spike Happened
+Routing request Traffic-0038 to primary-2
+Routing request Traffic-0039 to primary-1
+Routing request Traffic-0040 to primary-2
+Routing request Traffic-0041 to primary-1
+Routing request Traffic-0042 to primary-2
+Routing request Traffic-0043 to primary-1
+No available servers for request Traffic-0044
+No available servers for request Traffic-0045
+
+>>>>> Scaled UP: Added server Auto-1 (Total: 3)<<<<<
+
+=============================================================================================
+LOAD BALANCER: 
+ Algorithm: rotating
+ Servers: 3 active
+ Success Rate: 93.6%
+ System Load: 0/10 (0.0%)
+
+ Servers:
+ 1. primary-1: 0/3 (0%) OFFLINE ○
+ 2. primary-2: 0/4 (0%) OFFLINE ○
+ 3. Auto-1: 0/3 (0%) OFFLINE ○
+
+>>>>> Scaled DOWN: Removed server primary-1 (Total: 2)<<<<<
+```
+
 ## Tech Used 💻
 
 - Python
 - Threading (for concurrent requests)
 - Real time monitoring
 - Auto scaling algorithms
+
 
 
