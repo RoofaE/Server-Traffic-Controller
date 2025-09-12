@@ -22,7 +22,7 @@ On macOS:
 ```bash
 git clone https://github.com/RoofaE/Server-Traffic-Controller.git
 cd server-traffic-controller
-python main.py
+python3 main.py
 ```
 
 This starts everything:
@@ -74,4 +74,5 @@ python src/dashboard.py
 - Threading (for concurrent requests)
 - Real time monitoring
 - Auto scaling algorithms
+
 
